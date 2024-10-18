@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+// Prototipo
+void menu();
+int receberValorInteiro(char*);
+void receberValorReal(float*);
+float novoSalario(float);
+float mediaDosSalarios(float*,int);
+void replace(char*, char, char);
+ 
+int main(void) {
+    setbuf(stdout, NULL);
+    menu();
+    return 0;
+}
+ 
+void menu(){
+    char escolha;
+    int tamanho;
+    float *salario;
+    char string[30];
+    char caracter1, caracter2;
+    do{
+        do{
+            printf("\nMenu");
+            printf("\nA-Calcular novo salário");
+            printf("\nB-Minha replace");
+            printf("\nC-Finalizar\n");
+            printf("\nDigite uma das opções: ");
+            scanf(" %c",&escolha);
+            escolha = toupper(escolha);
+            if(escolha != 'A' && escolha != 'B' && escolha != 'C'){
+                printf("\nValor invalido, tente novamente\n");
+                scanf(" %c",&escolha);
+                escolha = toupper(escolha);
+            }
+        }while(escolha != 'A' && escolha != 'B' && escolha != 'C');
+        switch(escolha){
+            case 'A':
+                tamanho = receberValorInteiro("Digite a quantidade de posições:");
+                salario = (float*)malloc(sizeof(float)*tamanho);
+                printf("\n A média dos novos salários será: %.2f",mediaDosSalarios(salario,tamanho));
+                break;
+            case 'B':
+                printf("\nDigite uma frase: ");
+                fflush(stdin);
+                fgets(string, sizeof(string), stdin);
+                string[strcspn(string, "\n")] = 0; // Remover nova linha se estiver presente
+                printf("\nDigite o caracter que deseja substituir na frase digitada: ");
+                scanf(" %c",&caracter1);
+                printf("\nDigite o caracter que substituirá na frase digitada: ");
+                scanf(" %c",&caracter2);
+                replace(string, caracter1, caracter2);
+                printf("\nFrase alterada: %s\n", string);
+                break;
+            case 'C':
+                printf("Função finalizada");
+                break;
+        }
+    }while(escolha != 'C');
+}
+ 
+int receberValorInteiro(char *frase){
+    int valor;
+    do{
+        printf("\n %s",frase);
+        scanf(" %d",&valor);
+        if(valor<=0 || valor>50){
+            printf("\nValor invalido, tente novamente\n");
+        }
+ 
+ 
+    }while(valor<=0 || valor>50);
+    return valor;
+}
+ 
+void receberValorReal(float *valor){
+    float v;
+    do{
+            printf("\n Digite um valor real positivo:");
+            scanf(" %f",&v);
+            if(v<=0){
+                printf("\nValor invalido, tente novamente\n");
+            }
+    }while(v<=0);
+    *valor = v;
+ 
+}
+float novoSalario(float salario){
+    float novoSalario = 0;
+    if(salario<= 2500){
+        novoSalario = salario * 1.15;
+    }else if(salario<=7000){
+        novoSalario = salario * 1.075;
+    }else{
+        novoSalario = salario;
+    }
+    return novoSalario;
+}
+float mediaDosSalarios(float *salarios,int n){
+    float total = 0;
+    float media = 0;
+    for(int i = 0; i<n; i++){
+        receberValorReal(salarios);
+        *salarios = novoSalario(*salarios);
+        total += *salarios;
+        salarios++;
+    }
+    media = total/n;
+    return media;
+}
+void replace(char *string, char caracter1, char caracter2){
+    do{
+        if(*string == caracter1){
+            *string = caracter2;
+        }
+        string++;
+    }while(*string !='\0');
+ 
+}
